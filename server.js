@@ -1,6 +1,7 @@
 //load environment variables early
-require('dotenv').config();
-const connectDB = require('./config/database');
+const dotenv = require('dotenv');
+dotenv.config();
+const connectDB = require('./config/db');
 
 //Core modules
 const express = require('express');

@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please provide a password'],
         minlength: 6
     }
-
+}, {
+    timestamps: true
 });
 
 // Method to compare passwords

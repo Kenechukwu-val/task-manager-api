@@ -1,6 +1,13 @@
 const User = require('../models/user.model');
 const asyncHandler = require('express-async-handler');
+const jwt = require('jsonwebtoken');
 
+// Middleware to generate JWT token
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    });
+};
 
 // @desc Register a new user
 // @route POST /api/auth/register
@@ -30,9 +37,8 @@ exports.registerUser = asyncHandler(async (req, res) => {
 
     if (user) {
         res.status(201).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
+            message: 'User registered successfully',
+            token: generateToken(user._id)
         });
     } else {
         res.status(400);
@@ -61,9 +67,8 @@ exports.loginUser = asyncHandler(async ( req, res ) => {
     }                 
     //User authenticated successfully, return user data
     res.status(200).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
+        message: 'User logged in successfully',
+        token: generateToken(user)
     });
 });
 

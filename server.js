@@ -7,6 +7,12 @@ const connectDB = require('./config/db');
 const express = require('express');
 const cors = require('cors');
 
+//Routes
+const authRoutes = require('./routes/auth.routes');
+
+//Error handler
+const { errorHandler, notFound } = require('./middlewares/errorHandler');
+
 
 //middlewares setup
 const app = express();
@@ -17,6 +23,13 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.status(200).json({ status: 'task-manager-api is working' });
 });
+
+//API routes
+app.use('/api/auth', authRoutes);
+
+//Error handling middlewares
+app.use(notFound);
+app.use(errorHandler);
 
 //database connection
 connectDB();

@@ -1,13 +1,14 @@
 const taskController = require('../controllers/task.controller');
 const express  = require('express');
 const router   =  express.Router();
+const { protect } = require('../middlewares/auth.middleware');
 
 
 // Route to create a new task
-router.post('/', taskController.createTask);
+router.post('/', protect, taskController.createTask);
 
 // Route to get all tasks for the authenticated user
-router.get('/', taskController.getTasks);   
+router.get('/', protect, taskController.getTasks);   
 
 // Route to update a task
 router.put('/:id', taskController.updateTask);

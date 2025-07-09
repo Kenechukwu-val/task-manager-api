@@ -1,13 +1,7 @@
 const User = require('../models/user.model');
 const asyncHandler = require('express-async-handler');
-const jwt = require('jsonwebtoken');
+const { generateToken } = require('../middlewares/auth.middleware');
 
-// Middleware to generate JWT token
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
-    });
-};
 
 // @desc Register a new user
 // @route POST /api/auth/register

@@ -2,6 +2,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const asyncHandler = require('express-async-handler');
 
+// Middleware to generate JWT token
+exports.generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    });
+};
+
 // Middleware to protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
     let token;

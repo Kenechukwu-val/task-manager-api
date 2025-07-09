@@ -8,6 +8,7 @@ const { generateToken } = require('../middlewares/auth.middleware');
 exports.createTask = asyncHandler(async ( req, res ) => {
     const { title, description, status, priority, dueDate} = req.body;
 
+    // Validate user input
     if (!title) {
         res.status(400);
         throw new Error('Please provide a title for the task');
@@ -42,5 +43,66 @@ exports.getTasks = asyncHandler(async (req, res ) => {
     res.status(200).json({
         message: 'Tasks retrieved successfully',
         data: generateToken(tasks)
+    });
+});
+
+// @desc    Update a task
+// @route   PUT /api/tasks/:id
+// @access  Private
+exports.updateTask = asyncHandler(async (req, res) => {
+    const taskId = req.params.id;
+    const { title, description, status, priority, dueDate } = req.body;
+
+    const task = await Task.findById(taskId);
+
+    // Check if the task exists
+    if (!task) {
+        res.status(400);
+        throw new Error('Task not found');
+    }
+
+    // Check if the authenticated user is the owner of the task
+    if (task.user.toString() !== req.user._id.toString()) {
+        res.status(403);
+        throw new Error('Not authorized to update this task');
+    }
+
+    // Update task fields
+    task.title = title || task.title;
+    task.description = description || task.description;
+    task.status = status || task.status;
+    task.priority = priority || task.priority;
+    task.dueDate = dueDate || task.dueDate;
+
+    const updatedTask = await task.save();
+    res.status(200).json({
+        message: 'Task updated successfully',
+        data: generateToken(updatedTask)
+    });
+});
+
+// @desc    Delete a task
+// @route   DELETE /api/tasks/:id
+// @access  Private
+exports.deleteTask = asyncHandler(async (req, res) => {
+    const taskId = req.params.id;
+
+    const task = await Task.findById(taskId);
+    // Check if the task exists
+    if (!task) {
+        res.status(400);
+        throw new Error('Task not found');
+    }
+
+    // Check if the authenticated user is the owner of the task
+    if (task.user.toString() !== req.user._id.toString()) {
+        res.status(403);
+        throw new Error('Not authorized to delete this task');
+    }
+
+    await task.remove();
+    res.status(200).json({
+        message: 'Task deleted successfully',
+        data: generateToken(task._id)
     });
 });

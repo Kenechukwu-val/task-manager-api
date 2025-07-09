@@ -1,6 +1,5 @@
 const Task = require('../models/task.model');
 const asyncHandler = require('express-async-handler');
-const { generateToken } = require('../middlewares/auth.middleware');
 
 // @desc    Create a new task
 // @route   POST /api/tasks
@@ -26,7 +25,7 @@ exports.createTask = asyncHandler(async ( req, res ) => {
 
     res.status(201).json({
         message: 'Task created successfully',
-        data: generateToken(task._id)
+        data: task
     });
 });
 
@@ -34,7 +33,7 @@ exports.createTask = asyncHandler(async ( req, res ) => {
 // @route   GET /api/tasks
 // @access  Private
 exports.getTasks = asyncHandler(async (req, res ) => {
-    const tasks = await Task.find({ user: req.user._id}).populate('subtasks');
+    const tasks = await Task.find({ user: req.user._id}).populate('subtasks', 'title status');
 
     if (tasks.length === 0) {
         res.status(400);
@@ -43,7 +42,7 @@ exports.getTasks = asyncHandler(async (req, res ) => {
 
     res.status(200).json({
         message: 'Tasks retrieved successfully',
-        data: generateToken(tasks)
+        data: tasks
     });
 });
 
@@ -56,6 +55,16 @@ exports.updateTask = asyncHandler(async (req, res) => {
     const task = await Task.findByIdAndUpdate(taskId, req.body, {
         new: true, // Return the updated task
     });
+
+    if ( req.body.status === 'done' && task.subtasks.length > 0 ) {
+        // If the task is being marked as done, check if all subtasks are completed
+        const subtasks = await Task.find({ _id: {$in: task.subtasks}});
+        const unfinished = subtasks.filter(st => st.status !== 'done');
+        if (unfinished.length > 0 ) {
+            res.status(400);
+            throw new Error('Cannot mark as done. subtasks are not completed')
+        }
+    }
 
     // Check if the task exists
     if (!task) {
@@ -73,7 +82,7 @@ exports.updateTask = asyncHandler(async (req, res) => {
     const updatedTask = await task.save();
     res.status(200).json({
         message: 'Task updated successfully',
-        data: generateToken(updatedTask)
+        data: updatedTask
     });
 });
 
@@ -99,6 +108,6 @@ exports.deleteTask = asyncHandler(async (req, res) => {
     await task.remove();
     res.status(200).json({
         message: 'Task deleted successfully',
-        data: generateToken(task._id)
+        data: task
     });
 });

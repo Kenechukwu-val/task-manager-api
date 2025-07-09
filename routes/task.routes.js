@@ -11,9 +11,9 @@ router.post('/', protect, taskController.createTask);
 router.get('/', protect, taskController.getTasks);   
 
 // Route to update a task
-router.put('/:id', taskController.updateTask);
+router.put('/:id', protect, taskController.updateTask);
 
 // Route to delete a task
-router.delete('/:id', taskController.deleteTask);
+router.delete('/:id', protect, taskController.deleteTask);
 
 module.exports = router;

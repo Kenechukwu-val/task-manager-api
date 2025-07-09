@@ -6,7 +6,7 @@ const { generateToken } = require('../middlewares/auth.middleware');
 // @route   POST /api/tasks
 // @access  Private
 exports.createTask = asyncHandler(async ( req, res ) => {
-    const { title, description, status, priority, dueDate} = req.body;
+    const { title, description, status, priority, dueDate, subtasks } = req.body;
 
     // Validate user input
     if (!title) {
@@ -20,7 +20,8 @@ exports.createTask = asyncHandler(async ( req, res ) => {
         description,
         status: status || 'todo',
         priority: priority || 'medium',
-        dueDate
+        dueDate,
+        subtasks: subtasks || []
     });
 
     res.status(201).json({
@@ -33,7 +34,7 @@ exports.createTask = asyncHandler(async ( req, res ) => {
 // @route   GET /api/tasks
 // @access  Private
 exports.getTasks = asyncHandler(async (req, res ) => {
-    const tasks = await Task.find({ user: req.user._id});
+    const tasks = await Task.find({ user: req.user._id}).populate('subtasks');
 
     if (tasks.length === 0) {
         res.status(400);
@@ -51,9 +52,10 @@ exports.getTasks = asyncHandler(async (req, res ) => {
 // @access  Private
 exports.updateTask = asyncHandler(async (req, res) => {
     const taskId = req.params.id;
-    const { title, description, status, priority, dueDate } = req.body;
 
-    const task = await Task.findById(taskId);
+    const task = await Task.findByIdAndUpdate(taskId, req.body, {
+        new: true, // Return the updated task
+    });
 
     // Check if the task exists
     if (!task) {
@@ -68,12 +70,6 @@ exports.updateTask = asyncHandler(async (req, res) => {
     }
 
     // Update task fields
-    task.title = title || task.title;
-    task.description = description || task.description;
-    task.status = status || task.status;
-    task.priority = priority || task.priority;
-    task.dueDate = dueDate || task.dueDate;
-
     const updatedTask = await task.save();
     res.status(200).json({
         message: 'Task updated successfully',

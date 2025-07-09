@@ -9,6 +9,7 @@ const cors = require('cors');
 
 //Routes
 const authRoutes = require('./routes/auth.routes');
+const taskRoutes = require('./routes/task.routes');
 
 //Error handler
 const { errorHandler, notFound } = require('./middlewares/errorHandler');
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 
 //API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/tasks', taskRoutes);
 
 //Error handling middlewares
 app.use(notFound);

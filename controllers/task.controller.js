@@ -33,6 +33,8 @@ exports.createTask = asyncHandler(async ( req, res ) => {
 // @route   GET /api/tasks
 // @access  Private
 exports.getTasks = asyncHandler(async (req, res ) => {
+    // Get all tasks for the authenticated user
+    // Populate subtasks with title and status
     const tasks = await Task.find({ user: req.user._id}).populate('subtasks', 'title status');
 
     if (tasks.length === 0) {

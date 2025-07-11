@@ -35,6 +35,14 @@ const circularDependencyGuard = async (req, res, next) => {
             return next(); // No subtasks to check, proceed
         }
 
+        //A task cannot be its own subtask
+        if (subtasks.some((id) => id.toString() === taskId.toString())) {
+            return res.status(400).json({
+                message: 'A task cannot be its own subtask.',
+            });
+        }
+
+        // Check for circular dependencies in the subtasks
         const isCircular = await hasCircularDependency(taskId, subtasks);
         if (isCircular) {
             res.status(400).json({

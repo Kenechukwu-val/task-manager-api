@@ -45,7 +45,7 @@ const circularDependencyGuard = async (req, res, next) => {
         // Check for circular dependencies in the subtasks
         const isCircular = await hasCircularDependency(taskId, subtasks);
         if (isCircular) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: 'Circular dependency detected, cannot assign subtasks'
             });
         }

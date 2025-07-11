@@ -45,4 +45,4 @@ const circularDependencyGuard = async (req, res, next) => {
         next(); // No circular dependency, proceed to next middleware
 };
 
-module.exports = circularDependencyGuard;
+module.exports = {circularDependencyGuard}

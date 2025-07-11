@@ -2,6 +2,7 @@ const taskController = require('../controllers/task.controller');
 const express  = require('express');
 const router   =  express.Router();
 const { protect } = require('../middlewares/auth.middleware');
+const { circularDependencyGuard } = require('../middlewares/circularCheck');
 
 
 // Route to create a new task
@@ -11,7 +12,7 @@ router.post('/', protect, taskController.createTask);
 router.get('/', protect, taskController.getTasks);   
 
 // Route to update a task
-router.put('/:id', protect, taskController.updateTask);
+router.put('/:id', protect, circularDependencyGuard, taskController.updateTask);
 
 // Route to delete a task
 router.delete('/:id', protect, taskController.deleteTask);

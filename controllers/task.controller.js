@@ -33,10 +33,31 @@ exports.createTask = asyncHandler(async ( req, res ) => {
 // @route   GET /api/tasks
 // @access  Private
 exports.getTasks = asyncHandler(async (req, res ) => {
+    const { status, priority, dueBefore, dueAfter, sortBy, page = 1, limit = 10 } = req.query;
+
+    const filter = { user: req.user.id }; // Filter by authenticated user
+
+    if (status) filter.status = status;
+    if (priority) filter.priority = priority;
+    if (dueBefore) filter.dueDate = { ...filter.dueDate, $lte: new Date(dueBefore)};
+    if (dueAfter) filter.dueDate = { ...filter.dueDate, $gte: new Date(dueAfter)}; 
+
+
     // Get all tasks for the authenticated user
     // Populate subtasks with title and status
-    const tasks = await Task.find({ user: req.user._id}).populate('subtasks', 'title status');
+    let query = Task.find(filter).populate('subtasks', 'title status');
 
+    // Sort tasks if sortBy is provided
+    if (sortBy) {
+        const [field, order] = sortBy.split(':');
+        query = query.sort({[field]: order === 'desc' ? -1 : 1});
+    }
+
+    // Paginate tasks
+    const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(Number(limit));
+
+    const tasks = await query;
     if (tasks.length === 0) {
         res.status(400);
         throw new Error('No tasks found for this user');

@@ -79,16 +79,6 @@ exports.updateTask = asyncHandler(async (req, res) => {
         new: true, // Return the updated task
     });
 
-    if ( req.body.status === 'done' && task.subtasks.length > 0 ) {
-        // If the task is being marked as done, check if all subtasks are completed
-        const subtasks = await Task.find({ _id: {$in: task.subtasks}});
-        const unfinished = subtasks.filter(st => st.status !== 'done');
-        if (unfinished.length > 0 ) {
-            res.status(400);
-            throw new Error('Cannot mark as done. subtasks are not completed')
-        }
-    }
-
     // Check if the task exists
     if (!task) {
         res.status(400);

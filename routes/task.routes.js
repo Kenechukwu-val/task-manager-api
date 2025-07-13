@@ -18,4 +18,7 @@ router.put('/:id', protect, checkCompletionGuard, circularDependencyGuard, taskC
 // Route to delete a task
 router.delete('/:id', protect, taskController.deleteTask);
 
+// Route to get task stats
+router.get('/stats', protect, taskController.getTaskStats);
+
 module.exports = router;

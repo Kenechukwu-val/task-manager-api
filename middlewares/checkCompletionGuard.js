@@ -4,7 +4,6 @@ const asyncHandler = require('express-async-handler');
 // @desc    Update a task
 // @route   PUT /api/tasks/:id
 // @access  Private
-
 // Block marking as done if any subtasks aren't done
 const checkCompletionGuard = asyncHandler(async (req, res, next) => {
     const { status } = req.body;

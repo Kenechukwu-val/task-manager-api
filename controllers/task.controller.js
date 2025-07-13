@@ -124,3 +124,29 @@ exports.deleteTask = asyncHandler(async (req, res) => {
         data: task
     });
 });
+
+// @desc    Get a single task by ID
+// @route   GET /api/tasks/:id
+// @access  Private
+exports.getTaskStats = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+
+    const [ total, done, todo, inProgress, overdue] = await Promise.all([
+        Task.countDocuments({ user: userId}),
+        Task.countDocuments({ user: userId, status: 'done' }),
+        Task.countDocuments({ user: userId, status: 'todo' }),
+        Task.countDocuments({ user: userId, status: 'in-progress' }),
+        Task.countDocuments({ user: userId, dueDate: { $lt: new Date() }, status: { $ne: 'done' } }) // Overdue tasks that are not
+    ]);
+
+    res.status(200).json({
+        message: 'Task statistics retrieved successfully',
+        data: {
+            total,
+            done,
+            todo,
+            inProgress,
+            overdue
+        }
+    });
+});

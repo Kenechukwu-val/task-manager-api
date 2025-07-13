@@ -77,6 +77,7 @@ exports.updateTask = asyncHandler(async (req, res) => {
 
     const task = await Task.findByIdAndUpdate(taskId, req.body, {
         new: true, // Return the updated task
+        runValidators: true // Validate the updated data against the model schema
     });
 
     // Check if the task exists
@@ -90,12 +91,10 @@ exports.updateTask = asyncHandler(async (req, res) => {
         res.status(403);
         throw new Error('Not authorized to update this task');
     }
-
-    // Update task fields
-    const updatedTask = await task.save();
+    
     res.status(200).json({
         message: 'Task updated successfully',
-        data: updatedTask
+        data: task
     });
 });
 

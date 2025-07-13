@@ -11,8 +11,13 @@ const checkCompletionGuard = asyncHandler(async (req, res, next) => {
 
     if (status !== 'done') return next(); //Only care if marking as done
 
-    const task = await Task.findById(taskId).populate('subtasks', 'done');
+    const task = await Task.findById(taskId).populate('subtasks', 'status title');
     if (!task) return res.status(404).json({ message: 'Task not found' });
+
+    // Skip check if the task has no subtasks
+    if (!task.subtasks || task.subtasks.length === 0) {
+        return next();
+    }
 
     const hasIncompleteSubtasks = task.subtasks.some(sub => sub.status !== 'done');
     if (hasIncompleteSubtasks){

@@ -62,11 +62,6 @@ exports.loginUser = asyncHandler(async ( req, res ) => {
     //User authenticated successfully, return user data
     res.status(200).json({
         message: 'User logged in successfully',
-        data: {
-            _id: user._id,
-            name: user.name,
-            email: user.email
-        },
         token: generateToken(user)
     });
 });

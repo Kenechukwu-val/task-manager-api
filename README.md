@@ -112,9 +112,7 @@ Auto-sleeps after inactivity to conserve resources (Render free plan)
 
 ---
 
-Connect with Me
 🔗 LinkedIn – https://www.linkedin.com/in/kenechukwu-nwafor-361533163/
-
 🐙 GitHub – https://github.com/Kenechukwu-val
 
 

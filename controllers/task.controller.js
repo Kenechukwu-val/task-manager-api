@@ -117,7 +117,7 @@ exports.deleteTask = asyncHandler(async (req, res) => {
         throw new Error('Not authorized to delete this task');
     }
 
-    await task.remove();
+    await task.deleteOne();
     res.status(200).json({
         message: 'Task deleted successfully',
         data: task

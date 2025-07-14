@@ -1,5 +1,6 @@
 const Task = require('../models/task.model');
 const asyncHandler = require('express-async-handler');
+const deleteTaskAndSubtasks = require('../utils/delete.utils');
 
 // @desc    Create a new task
 // @route   POST /api/tasks
@@ -116,8 +117,9 @@ exports.deleteTask = asyncHandler(async (req, res) => {
         res.status(403);
         throw new Error('Not authorized to delete this task');
     }
+    // Delete the task and all its subtasks
+    await deleteTaskAndSubtasks(taskId);
 
-    await task.deleteOne();
     res.status(200).json({
         message: 'Task deleted successfully',
         data: task

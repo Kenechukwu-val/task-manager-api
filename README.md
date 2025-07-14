@@ -8,8 +8,8 @@ A secure and scalable backend API for managing tasks, subtasks, and task depende
 
 ## 🚀 Live Deployment
 
-🔗 API: [https://task-manager-api-s30d.onrender.com]
-📂 GitHub: [https://github.com/Kenechukwu-val/task-manager-api]
+🔗 API: [Task Manager API on Render](https://task-manager-api-s30d.onrender.com)  
+📂 GitHub: [github.com/Kenechukwu-val/task-manager-api](https://github.com/Kenechukwu-val/task-manager-api)
 
 ---
 
@@ -23,7 +23,7 @@ A secure and scalable backend API for managing tasks, subtasks, and task depende
   - Subtasks (other task documents linked as dependencies)
 - 🔄 **Circular dependency prevention middleware**
 - ❌ Cannot mark a task as `done` unless all subtasks are complete
-- 🗑️ **Recursive deletion** — When a task is deleted, all its subtasks are also deleted
+- 🗑️ **Recursive deletion** — when a task is deleted, all its subtasks are also deleted
 - 📊 Task filtering by status and priority
 - 💥 Clean and consistent error handling
 
@@ -41,6 +41,8 @@ A secure and scalable backend API for managing tasks, subtasks, and task depende
 ---
 
 ## 📁 Project Structure
+
+```
 task-manager-api/
 ├── controllers/
 ├── middlewares/
@@ -50,7 +52,7 @@ task-manager-api/
 ├── config/
 ├── .env
 └── server.js
-
+```
 
 ---
 
@@ -60,60 +62,87 @@ task-manager-api/
 
 ### 🔐 Authentication
 
-### Users
+```http
 POST   /api/users/register    # Register a new user
 POST   /api/users/login       # Login user and return JWT
 GET    /api/users/profile     # Get current user profile (protected)
+```
 
-### Tasks
+### 📌 Tasks
+
+```http
 POST   /api/tasks             # Create a task
 GET    /api/tasks             # Get all tasks for current user
 GET    /api/tasks/:id         # Get a specific task
 PUT    /api/tasks/:id         # Update a task (with guard logic)
 DELETE /api/tasks/:id         # Delete a task + its subtasks
+```
 
 ---
 
-### Sample Flow
-Create Task A (parent task)
+## 🧪 Sample Flow
 
-Create Task B and Task C, then assign them as subtasks of Task A
-
-Try to mark Task A as "done" — ❌ Blocked if B or C is incomplete
-
-Mark B and C as "done" → ✅ Now you can mark Task A as "done"
-
-Delete Task A → 🗑️ Task B and Task C are also deleted
+1. **Create Task A** (parent task)
+2. **Create Task B and Task C**, then assign them as subtasks of A
+3. Try to mark Task A as `"done"` — ❌ Blocked if B or C is incomplete
+4. Mark B and C as `"done"` → ✅ Now you can mark Task A as `"done"`
+5. Delete Task A → 🗑️ Task B and Task C are also deleted
 
 ---
 
+## 📦 Environment Setup
 
-### Developer Notes
+1. Create `.env` file in the root directory:
 
-Subtasks are stored as ObjectId references to other tasks
+```env
+PORT=3500
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_super_secret_key
+```
 
-Circular subtasks are blocked via middleware
+2. Install dependencies:
 
-Middleware prevents marking a task as "done" if subtasks aren't
+```bash
+npm install
+```
 
-Recursive deletion logic ensures subtasks don't become orphans
+3. Run in development:
 
-Clean controller separation, with asyncHandler to manage errors
+```bash
+npm run dev
+```
 
 ---
 
-### Deployment
+## 🧑‍💻 Developer Notes
 
-App is live on Render
-
-Uses persistent MongoDB Atlas database
-
-Auto-sleeps after inactivity to conserve resources (Render free plan)
+- Subtasks are stored as `ObjectId` references to other tasks
+- Circular subtasks are **blocked** via middleware
+- Middleware prevents marking a task as `"done"` if subtasks aren't
+- Recursive deletion logic ensures subtasks don't become orphans
+- Clean controller separation, with asyncHandler to manage errors
 
 ---
 
-🔗 LinkedIn – https://www.linkedin.com/in/kenechukwu-nwafor-361533163/
-🐙 GitHub – https://github.com/Kenechukwu-val
+## 🌍 Deployment
 
+- App is live on Render
+- Uses persistent MongoDB Atlas database
+- Auto-sleeps after inactivity to conserve resources (Render free plan)
 
+---
 
+## 📢 Connect with Me
+
+- 🔗 [LinkedIn – Kenechukwu Nwafor](https://www.linkedin.com/in/kenechukwu-nwafor-361533163)
+- 🐙 [GitHub – Kenechukwu-val](https://github.com/Kenechukwu-val)
+
+---
+
+## 📌 License
+
+MIT — Free to use, modify, and distribute.
+
+---
+
+> 💬 Feedback is welcome! Open an issue or reach out on LinkedIn.
